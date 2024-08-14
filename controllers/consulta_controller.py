@@ -22,3 +22,4 @@ class ConsultaController:
     
     def remover_consulta(self, consulta_id):
         return self.consulta_repo._delete_consulta(consulta_id)
+
