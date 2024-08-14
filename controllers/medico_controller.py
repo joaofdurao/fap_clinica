@@ -7,7 +7,7 @@ class medicoController:
         self.Medico_repo = medicoRepo()
 
     def criar_Medico(self, medico_id, nome, especialidade, crm):
-        Medico = Medico(medico_id = medico_id, nome= nome, especialidade = especialidade, crm = crm)
+        Medico = Medico(medico_id = medico_id, nome = nome, especialidade = especialidade, crm = crm)
         return self.Medico_repo._create_Medico(Medico)
 
     def buscar_Medico(self, medico_id):
@@ -17,7 +17,7 @@ class medicoController:
         return self.Medico_repo._list_Medicos()
 
     def atualizar_Medico(self, medico_id, nome, especialidade, crm):
-        u_Medico = Medico(medico_id = medico_id, nome= nome, especialidade = especialidade, crm = crm)
+        u_Medico = Medico(medico_id = medico_id, nome = nome, especialidade = especialidade, crm = crm)
         return self.Medico_repo._update_Medico(u_Medico, id)
     
     def remover_Medico(self, medico_id):
