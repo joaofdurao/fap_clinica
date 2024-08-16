@@ -18,7 +18,6 @@ class Janela(tk.Tk):
         self.tela_atual = nova_tela
         self.tela_atual.pack()
 
-
 class TelaMenuInicial(tk.Frame):
     def __init__(self, master, manager):
         super().__init__(master)
@@ -98,11 +97,85 @@ class TelaMenuInicial(tk.Frame):
         janela_lista.title("Lista de Pacientes")
         janela_lista.geometry("600x400")
         
-        listbox = tk.Listbox(janela_lista, width=80, height=20)
-        listbox.pack(padx=10, pady=10)
+        self.listbox = tk.Listbox(janela_lista, width=100, height=15)
+        self.listbox.pack(padx=10, pady=10)
 
         for paciente in self.pacientes:
-            listbox.insert(tk.END, f"ID: {paciente['id']}, CPF: {paciente['cpf']}, Nome: {paciente['nome']}, Data Nasc: {paciente['data_nasc']}, Telefone: {paciente['telefone']}")
+            self.listbox.insert(tk.END, f"ID: {paciente['id']}, CPF: {paciente['cpf']}, Nome: {paciente['nome']}, Data Nasc: {paciente['data_nasc']}, Telefone: {paciente['telefone']}")
+
+        button_frame = tk.Frame(janela_lista)
+        button_frame.pack(pady=5)
+
+        tk.Button(janela_lista, text="Alterar Paciente", command=self.alterar_paciente).pack(pady=5)
+        tk.Button(janela_lista, text="Excluir Paciente", command=self.excluir_paciente).pack(pady=5)
+
+    def alterar_paciente(self):
+        selecionado = self.listbox.curselection()
+        if not selecionado:
+            messagebox.showwarning("Atenção", "Selecione um paciente para alterar.")
+            return
+        
+        indice = selecionado[0]
+        paciente = self.pacientes[indice]
+
+        self.janela_alteracao_paciente = tk.Toplevel(self)
+        self.janela_alteracao_paciente.title("Alterar Paciente")
+        self.janela_alteracao_paciente.geometry("400x350")
+
+        tk.Label(self.janela_alteracao_paciente, text="CPF:").grid(row=0, column=0, padx=10, pady=5)
+        self.entry_cpf = tk.Entry(self.janela_alteracao_paciente)
+        self.entry_cpf.insert(0, paciente["cpf"])
+        self.entry_cpf.grid(row=0, column=1, padx=10, pady=5)
+
+        tk.Label(self.janela_alteracao_paciente, text="Nome:").grid(row=1, column=0, padx=10, pady=5)
+        self.entry_nome = tk.Entry(self.janela_alteracao_paciente)
+        self.entry_nome.insert(0, paciente["nome"])
+        self.entry_nome.grid(row=1, column=1, padx=10, pady=5)
+
+        tk.Label(self.janela_alteracao_paciente, text="Data de Nascimento:").grid(row=2, column=0, padx=10, pady=5)
+        self.entry_data_nasc = tk.Entry(self.janela_alteracao_paciente)
+        self.entry_data_nasc.insert(0, paciente["data_nasc"])
+        self.entry_data_nasc.grid(row=2, column=1, padx=10, pady=5)
+
+        tk.Label(self.janela_alteracao_paciente, text="Telefone:").grid(row=3, column=0, padx=10, pady=5)
+        self.entry_telefone = tk.Entry(self.janela_alteracao_paciente)
+        self.entry_telefone.insert(0, paciente["telefone"])
+        self.entry_telefone.grid(row=3, column=1, padx=10, pady=5)
+
+        tk.Button(self.janela_alteracao_paciente, text="Salvar Alterações", command=lambda: self.salvar_alteracoes(indice)).grid(row=4, column=0, columnspan=2, pady=10)
+
+    def salvar_alteracoes(self, indice):
+        cpf = self.entry_cpf.get()
+        nome = self.entry_nome.get()
+        data_nasc = self.entry_data_nasc.get()
+        telefone = self.entry_telefone.get()
+
+        if not cpf or not nome or not data_nasc or not telefone:
+            messagebox.showwarning("Atenção", "Todos os campos devem ser preenchidos.")
+            return
+
+        self.pacientes[indice] = {
+            "id": self.pacientes[indice]["id"],
+            "cpf": cpf,
+            "nome": nome,
+            "data_nasc": data_nasc,
+            "telefone": telefone
+        }
+
+        messagebox.showinfo("Sucesso", "Paciente alterado com sucesso!")
+        self.janela_alteracao_paciente.destroy()
+        self.listar_pacientes()
+
+    def excluir_paciente(self):
+        selecionado = self.listbox.curselection()
+        if not selecionado:
+            messagebox.showwarning("Atenção", "Selecione um paciente para excluir.")
+            return
+        
+        indice = selecionado[0]
+        del self.pacientes[indice]
+        self.listbox.delete(indice)
+        messagebox.showinfo("Sucesso", "Paciente excluído com sucesso!")
 
     def abrir_medico(self):
         print("Abrir Medico")
@@ -110,12 +183,7 @@ class TelaMenuInicial(tk.Frame):
     def abrir_consulta(self):
         print("Abrir Consulta")
 
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.title("Menu Inicial")
-    tela = TelaMenuInicial(root, None)
-    tela.pack(fill="both", expand=True)
-    root.mainloop()
+
 
     # -> Bt cad Paciente
     # -> bt pesquisa paciente
