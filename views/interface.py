@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class Janela(tk.Tk):
     def __init__(self):
@@ -17,10 +18,14 @@ class Janela(tk.Tk):
         self.tela_atual = nova_tela
         self.tela_atual.pack()
 
+
 class TelaMenuInicial(tk.Frame):
     def __init__(self, master, manager):
         super().__init__(master)
         self.manager = manager
+        self.pacientes = []  # Lista para armazenar pacientes
+        self.proximo_id = 1  # Inicializa o ID do próximo paciente
+        
         self.canvas = tk.Canvas(self, width=1080, height=720)
         self.canvas.pack(fill="both", expand=True)
         
@@ -42,7 +47,62 @@ class TelaMenuInicial(tk.Frame):
         self.btn_consulta.place(relx=0.5, rely=0.5 + 2 * button_spacing, anchor="center")
 
     def abrir_paciente(self):
-        print("Abrir Paciente")
+        self.janela_cadastro_paciente = tk.Toplevel(self)
+        self.janela_cadastro_paciente.title("Cadastro de Paciente")
+        self.janela_cadastro_paciente.geometry("400x350")
+
+        tk.Label(self.janela_cadastro_paciente, text="CPF:").grid(row=0, column=0, padx=10, pady=5)
+        self.entry_cpf = tk.Entry(self.janela_cadastro_paciente)
+        self.entry_cpf.grid(row=0, column=1, padx=10, pady=5)
+
+        tk.Label(self.janela_cadastro_paciente, text="Nome:").grid(row=1, column=0, padx=10, pady=5)
+        self.entry_nome = tk.Entry(self.janela_cadastro_paciente)
+        self.entry_nome.grid(row=1, column=1, padx=10, pady=5)
+
+        tk.Label(self.janela_cadastro_paciente, text="Data de Nascimento:").grid(row=2, column=0, padx=10, pady=5)
+        self.entry_data_nasc = tk.Entry(self.janela_cadastro_paciente)
+        self.entry_data_nasc.grid(row=2, column=1, padx=10, pady=5)
+
+        tk.Label(self.janela_cadastro_paciente, text="Telefone:").grid(row=3, column=0, padx=10, pady=5)
+        self.entry_telefone = tk.Entry(self.janela_cadastro_paciente)
+        self.entry_telefone.grid(row=3, column=1, padx=10, pady=5)
+
+        tk.Button(self.janela_cadastro_paciente, text="Salvar", command=self.salvar_dados).grid(row=4, column=0, columnspan=2, pady=10)
+        tk.Button(self.janela_cadastro_paciente, text="Listar Pacientes", command=self.listar_pacientes).grid(row=5, column=0, columnspan=2, pady=10)
+
+    def salvar_dados(self):
+        cpf = self.entry_cpf.get()
+        nome = self.entry_nome.get()
+        data_nasc = self.entry_data_nasc.get()
+        telefone = self.entry_telefone.get()
+
+        if not cpf or not nome or not data_nasc or not telefone:
+            messagebox.showwarning("Atenção", "Todos os campos devem ser preenchidos.")
+            return
+        
+        paciente = {
+            "id": self.proximo_id,
+            "cpf": cpf,
+            "nome": nome,
+            "data_nasc": data_nasc,
+            "telefone": telefone
+        }
+        self.pacientes.append(paciente)
+        self.proximo_id += 1  # Incrementa o ID para o próximo paciente
+        
+        messagebox.showinfo("Sucesso", "Paciente cadastrado com sucesso!")
+        self.janela_cadastro_paciente.destroy()
+
+    def listar_pacientes(self):
+        janela_lista = tk.Toplevel(self)
+        janela_lista.title("Lista de Pacientes")
+        janela_lista.geometry("600x400")
+        
+        listbox = tk.Listbox(janela_lista, width=80, height=20)
+        listbox.pack(padx=10, pady=10)
+
+        for paciente in self.pacientes:
+            listbox.insert(tk.END, f"ID: {paciente['id']}, CPF: {paciente['cpf']}, Nome: {paciente['nome']}, Data Nasc: {paciente['data_nasc']}, Telefone: {paciente['telefone']}")
 
     def abrir_medico(self):
         print("Abrir Medico")
@@ -50,13 +110,12 @@ class TelaMenuInicial(tk.Frame):
     def abrir_consulta(self):
         print("Abrir Consulta")
 
-
-class TelaPaciente(tk.Frame):
-    def __init__(self, master, manager):
-        super().__init__(master)
-        self.manager = manager
-        self.canvas = tk.Canvas(self, width=1080, height=720)
-        self.canvas.pack(fill="both", expand=True)
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.title("Menu Inicial")
+    tela = TelaMenuInicial(root, None)
+    tela.pack(fill="both", expand=True)
+    root.mainloop()
 
     # -> Bt cad Paciente
     # -> bt pesquisa paciente
