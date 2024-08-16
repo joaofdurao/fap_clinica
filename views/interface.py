@@ -22,8 +22,8 @@ class TelaMenuInicial(tk.Frame):
     def __init__(self, master, manager):
         super().__init__(master)
         self.manager = manager
-        self.pacientes = []  # Lista para armazenar pacientes
-        self.proximo_id = 1  # Inicializa o ID do próximo paciente
+        self.pacientes = []
+        self.proximo_id = 1
         
         self.canvas = tk.Canvas(self, width=1080, height=720)
         self.canvas.pack(fill="both", expand=True)
@@ -87,7 +87,7 @@ class TelaMenuInicial(tk.Frame):
             "telefone": telefone
         }
         self.pacientes.append(paciente)
-        self.proximo_id += 1  # Incrementa o ID para o próximo paciente
+        self.proximo_id += 1  
         
         messagebox.showinfo("Sucesso", "Paciente cadastrado com sucesso!")
         self.janela_cadastro_paciente.destroy()
