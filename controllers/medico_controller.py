@@ -1,7 +1,7 @@
 from models.medico import Medico
 from repositories.medico_repository import medicoRepo
 
-class medicoController:
+class MedicoController:
     
     def __init__(self):
         self.Medico_repo = medicoRepo()

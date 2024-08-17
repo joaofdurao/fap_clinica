@@ -7,10 +7,9 @@ class PacienteRepo():
     def _connect(self):
         return CursorMySql().create_connection()
 
-    def _create_paciente(self, paciente: Paciente):
-
-        query = 'INSERT INTO paciente (cpf, nome, data_nascimento, telefone) VALUES (%s, %s, %s, %s)'
-        values = tuple(paciente.cpf, paciente.nome, paciente.data_nascimento, paciente.telefone )
+    def create_paciente(self, paciente: Paciente):
+        query = 'INSERT INTO paciente (nome, cpf, data_nascimento, telefone) VALUES (%s, %s, %s, %s)'
+        values = (paciente.nome, paciente.cpf, paciente.data_nascimento, paciente.telefone)
         self.conn, self.cursor = self._connect()
         try:
             self.cursor.execute(query, values)
@@ -24,7 +23,7 @@ class PacienteRepo():
         finally:
             self.conn.close()
 
-    def _find_paciente_by_id(self, paciente_id):
+    def find_paciente_by_id(self, paciente_id):
  
         query = 'SELECT * FROM paciente WHERE id = %s'
         self.conn, self.cursor = self._connect()
@@ -42,7 +41,25 @@ class PacienteRepo():
         finally:
             self.conn.close()
     
-    def _list_paciente(self):
+    def find_last_paciente(self):
+        query = 'SELECT * FROM paciente WHERE id = (SELECT MAX(id) FROM paciente)'
+        self.conn, self.cursor = self._connect()
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchone()
+            if result:
+                return result
+            else:
+                print("Registro não encontrado")
+                return None
+        except mysql.connector.Error as e:
+            print(f"Erro ao encontrar registro: {e}")
+            return None
+        finally:
+            self.conn.close()
+
+
+    def list_paciente(self):
         query = 'SELECT * FROM paciente'
         self.conn, self.cursor = self._connect()
         try:
@@ -59,10 +76,10 @@ class PacienteRepo():
         finally:
             self.conn.close()
 
-    def _update_paciente(self, paciente: Paciente, paciente_id):
+    def update_paciente(self, paciente: Paciente):
    
         query = 'UPDATE paciente SET cpf = %s, nome = %s, data_nascimento = %s, telefone = %s WHERE id = %s'
-        values = tuple(paciente.cpf, paciente.nome, paciente.data_nascimento, paciente.telefone, paciente_id)
+        values = (paciente.cpf, paciente.nome, paciente.data_nascimento, paciente.telefone, paciente.id)
         self.conn, self.cursor = self._connect()
 
         try:
@@ -77,7 +94,7 @@ class PacienteRepo():
         finally:
             self.conn.close()
 
-    def _delete_paciente(self, paciente_id):
+    def delete_paciente(self, paciente_id):
    
         query = f"DELETE FROM paciente WHERE id = {paciente_id}"
         self.conn, self.cursor = self._connect()
