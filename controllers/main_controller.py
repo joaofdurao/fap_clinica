@@ -1,5 +1,7 @@
 from views.main_view import MainView
 from controllers.paciente_controller import PacienteController
+from controllers.medico_controller import MedicoController
+from controllers.consulta_controller import ConsultaController
 
 class MainController:
     def __init__(self, root):
@@ -12,12 +14,11 @@ class MainController:
         self.main_view.btn_medico.config(command=self.open_medico_management)
         self.main_view.btn_consulta.config(command=self.open_consulta_management)
 
-
     def open_paciente_management(self):
         PacienteController(self.root)
 
     def open_medico_management(self):
-        PacienteController(self.root)
+        MedicoController(self.root)
 
     def open_consulta_management(self):
-        PacienteController(self.root)
+        ConsultaController(self.root)

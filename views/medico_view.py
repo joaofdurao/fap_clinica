@@ -1,11 +1,11 @@
 from tkinter import Entry, Frame, Label, Button
 from tkinter.ttk import Scrollbar, Treeview
 
-class ConsultaView:
+class MedicoView:
       
     def __init__(self, root):
         self.root = root
-        self.root.title("Gerenciamento de Consultas")
+        self.root.title("Cadastro de Médicos")
         
         # Configuração do frame principal
         self.main_frame = Frame(self.root)
@@ -15,22 +15,22 @@ class ConsultaView:
         self.left_frame = Frame(self.main_frame)
         self.left_frame.pack(side="left", fill="y", padx=5, pady=5)
         
-        # Campos de entrada para os dados da consulta
+        # Campos de entrada para os dados do médico
         Label(self.left_frame, text="Id").pack(anchor="w")
         self.id_entry = Entry(self.left_frame)
         self.id_entry.pack(fill="x", pady=5)
 
-        Label(self.left_frame, text="Data e Hora").pack(anchor="w")
-        self.data_hora_entry = Entry(self.left_frame)
-        self.data_hora_entry.pack(fill="x", pady=5)
+        Label(self.left_frame, text="Nome").pack(anchor="w")
+        self.nome_entry = Entry(self.left_frame)
+        self.nome_entry.pack(fill="x", pady=5)
 
-        Label(self.left_frame, text="ID do Médico").pack(anchor="w")
-        self.fk_medico_id_entry = Entry(self.left_frame)
-        self.fk_medico_id_entry.pack(fill="x", pady=5)
+        Label(self.left_frame, text="CRM").pack(anchor="w")
+        self.crm_entry = Entry(self.left_frame)
+        self.crm_entry.pack(fill="x", pady=5)
 
-        Label(self.left_frame, text="ID do Paciente").pack(anchor="w")
-        self.fk_paciente_id_entry = Entry(self.left_frame)
-        self.fk_paciente_id_entry.pack(fill="x", pady=5)
+        Label(self.left_frame, text="Especialidade").pack(anchor="w")
+        self.especialidade_entry = Entry(self.left_frame)
+        self.especialidade_entry.pack(fill="x", pady=5)
         
         # Botões
         self.list_bt = Button(self.left_frame, text="Ver todos")
@@ -54,8 +54,8 @@ class ConsultaView:
         self.treeview_frame = Frame(self.right_frame)
         self.treeview_frame.pack(fill="both", expand=True)
         
-        # Treeview para mostrar os dados das consultas
-        self.columns = ("ID", "Data e Hora", "ID do Médico", "ID do Paciente")
+        # Treeview para mostrar os dados dos médicos
+        self.columns = ("ID", "Nome", "CRM", "Especialidade")
         self.treeview = Treeview(self.treeview_frame, columns=self.columns, show="headings")
         self.treeview.pack(side="left", fill="both", expand=True)
 
