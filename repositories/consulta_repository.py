@@ -7,26 +7,30 @@ class ConsultaRepo():
     def _connect(self):
         return CursorMySql().create_connection()
 
-    def _create_consulta(self, consulta: Consulta):
+    def create_consulta(self, consulta: Consulta):
 
-        query = 'INSERT INTO consulta (data_hora, fk_medico_id, fk_paciente_id) VALUES (%s, %s, %s)'
-        values = tuple(consulta.data_hora, consulta.fk_medico_id, consulta.fk_paciente_id )
+        query = 'INSERT INTO consulta (data_hora, medico_id, paciente_id) VALUES (%s, %s, %s)'
+        values = (consulta.data_hora, consulta.medico_id, consulta.paciente_id)
         self.conn, self.cursor = self._connect()
         try:
             self.cursor.execute(query, values)
             self.conn.commit()
-            print("Registro criado com sucesso")
             return True
-        except mysql.connector.Error as e:
-            print(f"Erro ao criar registro: {e}")
+        except mysql.connector.Error:
             self.conn.rollback()
             return False
         finally:
             self.conn.close()
 
-    def _find_consulta_by_id(self, consulta_id):
+    def find_consulta_by_id(self, consulta_id):
  
-        query = 'SELECT * FROM consulta WHERE id = %s'
+        query = ('SELECT consulta.id, consulta.data_hora, '
+                'medico.id AS medico_id, medico.nome AS medico_nome, medico.especialidade AS medico_especialidade, '
+                'paciente.id AS paciente_id, paciente.nome AS paciente_nome, paciente.cpf AS paciente_cpf '
+                'FROM consulta '
+                'INNER JOIN medico ON consulta.medico_id = medico.id '
+                'INNER JOIN  paciente ON consulta.paciente_id = paciente.id '
+                'WHERE consulta.id = %s')
         self.conn, self.cursor = self._connect()
         try:
             self.cursor.execute(query, (consulta_id,))
@@ -34,16 +38,40 @@ class ConsultaRepo():
             if result:
                 return result
             else:
-                print("Registro não encontrado")
                 return None
-        except mysql.connector.Error as e:
-            print(f"Erro ao encontrar registro: {e}")
+        except mysql.connector.Error:
+            return None
+        finally:
+            self.conn.close()
+
+    def find_last_consulta(self):
+        query = ('SELECT consulta.id, consulta.data_hora, '
+                'medico.id AS medico_id, medico.nome AS medico_nome, medico.especialidade AS medico_especialidade, '
+                'paciente.id AS paciente_id, paciente.nome AS paciente_nome, paciente.cpf AS paciente_cpf '
+                'FROM consulta '
+                'INNER JOIN medico ON consulta.medico_id = medico.id '
+                'INNER JOIN paciente ON consulta.paciente_id = paciente.id '
+                'WHERE consulta.id = (SELECT MAX(id) FROM consulta)')
+        self.conn, self.cursor = self._connect()
+        try:
+            self.cursor.execute(query)
+            result = self.cursor.fetchone()
+            if result:
+                return result
+            else:
+                return None
+        except mysql.connector.Error:
             return None
         finally:
             self.conn.close()
     
-    def _list_consultas(self):
-        query = 'SELECT * FROM consultas'
+    def list_consultas(self):
+        query = ('SELECT consulta.id, consulta.data_hora, '
+                'medico.id AS medico_id, medico.nome AS medico_nome, medico.especialidade AS medico_especialidade, '
+                'paciente.id AS paciente_id, paciente.nome AS paciente_nome, paciente.cpf AS paciente_cpf '
+                'FROM consulta '
+                'INNER JOIN medico ON consulta.medico_id = medico.id '
+                'INNER JOIN  paciente ON consulta.paciente_id = paciente.id')
         self.conn, self.cursor = self._connect()
         try:
             self.cursor.execute(query)
@@ -51,33 +79,29 @@ class ConsultaRepo():
             if result:
                 return result
             else:
-                print("Registro não encontrado")
                 return None
-        except mysql.connector.Error as e:
-            print(f"Erro ao encontrar registro: {e}")
+        except mysql.connector.Error:
             return None
         finally:
             self.conn.close()
 
-    def _update_consulta(self, consulta: Consulta, consulta_id):
+    def update_consulta(self, consulta: Consulta):
    
-        query = 'UPDATE consulta SET data_hora = %s, fk_medico_id = %s, fk_paciente_id = %s WHERE id = %s'
-        values = tuple(consulta.data_hora, consulta.fk_medico_id, consulta.fk_paciente_id, consulta_id)
+        query = 'UPDATE consulta SET data_hora = %s, medico_id = %s, paciente_id = %s WHERE id = %s'
+        values = (consulta.data_hora, consulta.medico_id, consulta.paciente_id, consulta.id)
         self.conn, self.cursor = self._connect()
 
         try:
             self.cursor.execute(query, values)
             self.conn.commit()
-            print("Registro atualizado com sucesso")
             return True
-        except mysql.connector.Error as e:
-            print(f"Erro ao atualizar registro: {e}")
+        except mysql.connector.Error:
             self.conn.rollback()
             return False
         finally:
             self.conn.close()
 
-    def _delete_consulta(self, consulta_id):
+    def delete_consulta(self, consulta_id):
    
         query = f"DELETE FROM consulta WHERE id = {consulta_id}"
         self.conn, self.cursor = self._connect()
@@ -85,10 +109,8 @@ class ConsultaRepo():
         try:
             self.cursor.execute(query)
             self.conn.commit()
-            print("Registro excluído com sucesso")
             return True
-        except mysql.connector.Error as e:
-            print(f"Erro ao excluir registro: {e}")
+        except mysql.connector.Error:
             self.conn.rollback()
             return False
         finally:

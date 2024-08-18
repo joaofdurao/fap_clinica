@@ -1,4 +1,4 @@
-from tkinter import END, Toplevel
+from tkinter import END, Toplevel, messagebox
 from datetime import datetime
 from models.paciente import Paciente
 from views.paciente_view import PacienteView
@@ -32,7 +32,7 @@ class PacienteController:
                                                                 paciente.telefone))
         self.delete_inputs()
 
-    def show_by_id(self, paciente_id = None):
+    def show_by_id(self, paciente_id=None):
         for i in self.user_view.treeview.get_children():
             self.user_view.treeview.delete(i)
 
@@ -53,12 +53,19 @@ class PacienteController:
         dt_nascimento = datetime.strptime(dt_nascimento, self.BR_FMT_DATE)
         telefone = self.user_view.telefone_entry.get()
         telefone = f'({telefone[:2]}) {telefone[2:7]}-{telefone[7:]}'
-        paciente = Paciente(cpf=cpf, nome=nome, data_nascimento=dt_nascimento,telefone=telefone)
 
-        self.paciente_repo.create_paciente(paciente)
+        try:
+            paciente = Paciente(cpf=cpf, nome=nome, data_nascimento=dt_nascimento, telefone=telefone)
+            sucesso = self.paciente_repo.create_paciente(paciente)
+            if sucesso:
+                messagebox.showinfo("Sucesso", "Paciente criado com sucesso.")
+                lpaciente = self.paciente_repo.find_last_paciente()
+                self.show_by_id(lpaciente[0])
+            else:
+                messagebox.showerror("Erro", "Erro ao criar Paciente")
 
-        lpaciente = self.paciente_repo.find_last_paciente()
-        self.show_by_id(lpaciente[0])
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao criar Paciente: {e}")
 
     def get_all_pacientes(self):
         pacientes_dict_list = self.paciente_repo.list_paciente()
@@ -74,7 +81,7 @@ class PacienteController:
     def update_slc_paciente(self):
         selected_item = self.user_view.treeview.focus()
         if not selected_item:
-            print("Nenhum item selecionado")
+            messagebox.showwarning("Aviso", "Nenhum item selecionado")
             return
         
         nome = self.user_view.nome_entry.get()
@@ -103,19 +110,33 @@ class PacienteController:
         if telefone and updt_paciente.telefone != telefone:
             updt_paciente.telefone = telefone
 
-        self.paciente_repo.update_paciente(updt_paciente)
-        self.show_by_id(updt_paciente.id)
+        try: 
+            sucesso = self.paciente_repo.update_paciente(updt_paciente)
+            if sucesso:
+                messagebox.showinfo("Sucesso", "Paciente atualizado com sucesso.")
+                self.show_by_id(updt_paciente.id)
+            else:
+                messagebox.showerror("Erro", "Erro ao atualizar Paciente.")
+
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao atualizar Paciente: {e}")
 
     def remove_paciente(self):
         selected_item = self.user_view.treeview.focus()
         if not selected_item:
-            print("Nenhum item selecionado")
+            messagebox.showwarning("Aviso", "Nenhum item selecionado")
             return
         
-        paciente_id = self.user_view.treeview.item(selected_item, 'values')[0]
-
-        self.paciente_repo.delete_paciente(paciente_id)
-        self.show_all()
+        try:
+            paciente_id = self.user_view.treeview.item(selected_item, 'values')[0]
+            sucesso = self.paciente_repo.delete_paciente(paciente_id)
+            if sucesso:
+                messagebox.showinfo("Sucesso", "Paciente deletado com sucesso.")
+                self.show_all()
+            else:
+                messagebox.showerror("Erro", "Erro ao deletar Paciente.")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao deletar Paciente: {e}")
 
     def delete_inputs(self):
         self.user_view.id_entry.delete(0, END)

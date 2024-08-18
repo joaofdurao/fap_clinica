@@ -18,7 +18,7 @@ class MainView:
         self.btn_paciente = Button(main_frame, text="Paciente", width=btn_width, height=btn_height, font=btn_font)
         self.btn_paciente.place(relx=0.5, rely=0.5, anchor="center")
         
-        self.btn_medico = Button(main_frame, text="Medico", width=btn_width, height=btn_height, font=btn_font)
+        self.btn_medico = Button(main_frame, text="Médico", width=btn_width, height=btn_height, font=btn_font)
         self.btn_medico.place(relx=0.5, rely=0.5 + button_spacing, anchor="center")
         
         self.btn_consulta = Button(main_frame, text="Consulta", width=btn_width, height=btn_height, font=btn_font)

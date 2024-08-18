@@ -14,10 +14,8 @@ class PacienteRepo():
         try:
             self.cursor.execute(query, values)
             self.conn.commit()
-            print("Registro criado com sucesso")
             return True
-        except mysql.connector.Error as e:
-            print(f"Erro ao criar registro: {e}")
+        except mysql.connector.Error:
             self.conn.rollback()
             return False
         finally:
@@ -33,10 +31,8 @@ class PacienteRepo():
             if result:
                 return result
             else:
-                print("Registro não encontrado")
                 return None
-        except mysql.connector.Error as e:
-            print(f"Erro ao encontrar registro: {e}")
+        except mysql.connector.Error:
             return None
         finally:
             self.conn.close()
@@ -50,10 +46,8 @@ class PacienteRepo():
             if result:
                 return result
             else:
-                print("Registro não encontrado")
                 return None
-        except mysql.connector.Error as e:
-            print(f"Erro ao encontrar registro: {e}")
+        except mysql.connector.Error:
             return None
         finally:
             self.conn.close()
@@ -68,10 +62,8 @@ class PacienteRepo():
             if result:
                 return result
             else:
-                print("Registro não encontrado")
                 return None
-        except mysql.connector.Error as e:
-            print(f"Erro ao encontrar registro: {e}")
+        except mysql.connector.Error:
             return None
         finally:
             self.conn.close()
@@ -85,10 +77,8 @@ class PacienteRepo():
         try:
             self.cursor.execute(query, values)
             self.conn.commit()
-            print("Registro atualizado com sucesso")
             return True
-        except mysql.connector.Error as e:
-            print(f"Erro ao atualizar registro: {e}")
+        except mysql.connector.Error:
             self.conn.rollback()
             return False
         finally:
@@ -102,10 +92,8 @@ class PacienteRepo():
         try:
             self.cursor.execute(query)
             self.conn.commit()
-            print("Registro excluído com sucesso")
             return True
-        except mysql.connector.Error as e:
-            print(f"Erro ao excluir registro: {e}")
+        except mysql.connector.Error:
             self.conn.rollback()
             return False
         finally:
