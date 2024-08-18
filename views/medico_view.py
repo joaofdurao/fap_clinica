@@ -25,8 +25,8 @@ class MedicoView:
         self.nome_entry.pack(fill="x", pady=5)
 
         Label(self.left_frame, text="Especialidade").pack(anchor="w")
-        self.espacialidade_entry = Entry(self.left_frame)
-        self.espacialidade_entry.pack(fill="x", pady=5)
+        self.especialidade_entry = Entry(self.left_frame)
+        self.especialidade_entry.pack(fill="x", pady=5)
 
         Label(self.left_frame, text="CRM").pack(anchor="w")
         self.crm_entry = Entry(self.left_frame)
