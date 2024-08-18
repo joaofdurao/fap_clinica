@@ -25,12 +25,12 @@ class MedicoView:
         self.nome_entry.pack(fill="x", pady=5)
 
         Label(self.left_frame, text="Especialidade").pack(anchor="w")
-        self.cpf_entry = Entry(self.left_frame)
-        self.cpf_entry.pack(fill="x", pady=5)
+        self.espacialidade_entry = Entry(self.left_frame)
+        self.espacialidade_entry.pack(fill="x", pady=5)
 
         Label(self.left_frame, text="CRM").pack(anchor="w")
-        self.dt_nasc_entry = Entry(self.left_frame)
-        self.dt_nasc_entry.pack(fill="x", pady=5)
+        self.crm_entry = Entry(self.left_frame)
+        self.crm_entry.pack(fill="x", pady=5)
 
         # Botões
         self.list_bt = Button(self.left_frame, text="Ver todos")
