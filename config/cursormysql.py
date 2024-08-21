@@ -3,9 +3,9 @@ import mysql.connector
 
 class CursorMySql:
     
-    DB_USER = "admin"
-    DB_USER_PASSWD = "root1234"
-    DB_HOST = "fap-clinica.c9m0wssa8up6.us-east-2.rds.amazonaws.com"
+    DB_USER = "XXXX"
+    DB_USER_PASSWD = "XXXX"
+    DB_HOST = "XXXXXXX.rds.amazonaws.com"
     DB_PORT = 3306
     DB_SCHEMA = "fap_clinica"
 
